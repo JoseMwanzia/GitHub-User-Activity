@@ -12,9 +12,23 @@ const fetchedUser =  async (username) => {
     }
   }
 
-  console.log(await response.json())
-  // return response.json()
+  // console.log(await response.json())
+  return response.json()
 }
 
+const events = await fetchedUser('josemwanzia')
 
-fetchedUser()
+events.forEach((event) => {
+  if (event.length === 0) {
+    console.log('No recent activity!')
+    return;
+  }
+
+  if (event.type === 'PushEvent') {
+    const pushEvents = event.payload.commits.length
+    console.log(`Had ${pushEvents} push Events`)
+  } else {
+      
+  }
+
+})
