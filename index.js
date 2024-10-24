@@ -1,5 +1,5 @@
-const fetchedUser =  async () => {
-  const response  = await fetch('https://api.github.com/users/JoseMwanzia/events', {
+const fetchedUser =  async (username) => {
+  const response  = await fetch(`https://api.github.com/users/${username}/events`, {
     headers: {'Accept': 'application/vnd.github+json'}
   })
 
