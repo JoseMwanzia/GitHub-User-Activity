@@ -47,8 +47,6 @@ In the ``<username>`` provide a valid github username.
 
 ## Screenshots
 
-![App Screenshot](https://via.placeholder.com/468x300?text=App+Screenshot+Here)
-
 ![github-user-activity-screenshot](screenshot.png)
 ## License
 
