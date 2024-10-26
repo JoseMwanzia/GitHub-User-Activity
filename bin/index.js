@@ -45,3 +45,13 @@ if (!username) {
   console.error('Please provide a Github Username!')
   process.exit(1)
 }
+
+// process the data
+fetchedUser(username)
+  .then(events => {
+    displayEvents(events, filtereEvent)
+  })
+  .catch(error => {
+    console.log(error.message)
+    process.exit(1)
+  })
