@@ -15,11 +15,44 @@ const fetchedUser =  async (username) => {
 
   return response.json()
 }
+
 async function displayEvents(events, filtereEvent) {
   if (events.length === 0) {
     console.log('No recent activity!')
     return;
   }
+
+  if (filtereEvent) {
+    const filteredEvents = events.filter((event) => {
+      return event.type === filtereEvent;
+    })
+
+    if (filteredEvents.length === 0) {
+      console.log(`No events for ${filtereEvent} by ${username}`);
+      return;
+    }
+
+    filteredEvents.forEach((filterEvent) => {
+      let commitCount;
+
+      if (filterEvent.type === 'PushEvent') {
+        commitCount = `Pushed ${filterEvent.payload.commits.length} to ${filterEvent.repo.name}`;
+      } else if (filterEvent.type === 'IssueEvent') {
+        commitCount = `Issues events were ${filterEvent.payload.commits.length}`;
+      } else if (filterEvent.type === 'ForkEvent') {
+        commitCount = `Fork events are ${filterEvent.payload.commits.length}`
+      } else if (filterEvent.type === 'CreateEvent') {
+        commitCount = `Created events for ${filterEvent.payload.ref_type}`
+      } else if (filterEvent == {}) {
+        commitCount = `No events`;
+        return;
+      }
+      console.log(commitCount)
+    })
+    
+    return;
+  }
+
   events.forEach((event) => {
     let commitCount;
 
