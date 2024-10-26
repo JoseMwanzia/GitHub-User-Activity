@@ -38,3 +38,10 @@ async function displayEvents(events, filtereEvent) {
   })
 }
 
+const username = process.argv[2];
+const filtereEvent = process.argv[3];
+
+if (!username) {
+  console.error('Please provide a Github Username!')
+  process.exit(1)
+}
