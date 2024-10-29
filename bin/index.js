@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { createClient } from 'redis';
 const fetchedUser =  async (username) => {
   const response  = await fetch(`https://api.github.com/users/${username}/events`, {
     headers: {'Accept': 'application/vnd.github+json'}
@@ -79,12 +80,38 @@ if (!username) {
   process.exit(1)
 }
 
-// process the data
-fetchedUser(username)
-  .then(events => {
+// create a connection to Redis
+let redisClient;
+(async () => {
+  // the url is for displaying informtion of redis in upstash GUI
+  redisClient = createClient({url: process.env.REDIS_URL})
+
+  redisClient.on("error", (error) => console.error(`Error : ${error}`));
+
+  await redisClient.connect();
+})()
+
+try {
+  // process the data from the Redis cache if it is available.
+  const cachedData = await redisClient.get(username);
+
+  if (cachedData) {
+    let isCached = true;
+    let events = JSON.parse(cachedData);
+    console.log('Redis Cache Hit! \n===============================================')
     displayEvents(events, filtereEvent)
-  })
-  .catch(error => {
-    console.log(error.message)
-    process.exit(1)
-  })
+    process.exit(0)
+  } else {
+    // or process the data from the database
+    const events = await fetchedUser(username)
+    console.log('Database Hit! \n===============================================')
+    displayEvents(events, filtereEvent)
+    
+    // set data into redis if its not available
+    const DEFAULT_EXPIRATION_INT  = 3660;
+    await redisClient.set(username, DEFAULT_EXPIRATION_INT, JSON.stringify(events));
+    process.exit(0)
+  }
+} catch (error) {
+  console.log(error)
+}
