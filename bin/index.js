@@ -1,5 +1,8 @@
 #!/usr/bin/env node
 import { createClient } from 'redis';
+import dotenv from 'dotenv';
+dotenv.config()
+
 const fetchedUser =  async (username) => {
   const response  = await fetch(`https://api.github.com/users/${username}/events`, {
     headers: {'Accept': 'application/vnd.github+json'}
