@@ -111,8 +111,11 @@ try {
     displayEvents(events, filtereEvent)
     
     // set data into redis if its not available
-    const DEFAULT_EXPIRATION_INT  = 3660;
-    await redisClient.set(username, DEFAULT_EXPIRATION_INT, JSON.stringify(events));
+
+    await redisClient.set(username, JSON.stringify(events), {
+      EX: 180, // accepts a value with the cache duration in seconds.
+      NX: true // sets duplication of keys. it ensures that the set() method should only set a key that doesn’t already exist in Redis.
+    });
     process.exit(0)
   }
 } catch (error) {
